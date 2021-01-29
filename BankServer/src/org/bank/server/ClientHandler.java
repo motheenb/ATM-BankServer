@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * @author Motheen Baig
+ */
 public class ClientHandler {
 
     private final Server server;
@@ -19,6 +22,7 @@ public class ClientHandler {
         try {
             incoming = serverSocket.accept();
             freeID = getFreeID();
+            Server.log("Accepted connection: " + freeID + ", from: " + incoming.getInetAddress());
             clients[freeID] = new Client(freeID, incoming);
             clients[freeID].getClientThread().start();
         } catch (IOException e) {

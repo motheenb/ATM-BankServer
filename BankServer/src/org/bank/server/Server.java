@@ -13,10 +13,11 @@ public class Server implements Runnable {
     private final ClientHandler clientHandler = new ClientHandler(this);
 
     public Server() {
+        Server.log("Server listening on port: " + Configs.SERVER_PORT);
         try {
             serverSocket = new ServerSocket(Configs.SERVER_PORT);
         } catch (final IOException e) {
-            e.printStackTrace();
+            Server.log("Error listening on port: " + Configs.SERVER_PORT);
         }
     }
 
