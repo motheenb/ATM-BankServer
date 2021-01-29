@@ -3,13 +3,16 @@ package org.bank.atm;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * @author Motheen Baig
+ */
 public class ATM extends JFrame {
 
     private Image img;
     private Graphics gfx;
     private final ScreenRender screenRender = new ScreenRender(this);
     //
-    private final ATMConn atmConn = new ATMConn(this);
+    private ATMConn atmConn;
     //
     public static State STATE = State.ConnectToServer;
 
@@ -20,7 +23,9 @@ public class ATM extends JFrame {
         setVisible(true);
         img = createImage(500, 500);
         gfx = img.getGraphics();
-        atmConn.connectToServer();
+        //
+        atmConn = new ATMConn(this);
+        new Thread(atmConn).start();
     }
 
     public void paint(final Graphics g) {

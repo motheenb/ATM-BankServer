@@ -10,6 +10,7 @@ import java.net.ServerSocket;
 public class Server implements Runnable {
 
     private ServerSocket serverSocket;
+    private final ClientHandler clientHandler = new ClientHandler(this);
 
     public Server() {
         try {
@@ -22,7 +23,7 @@ public class Server implements Runnable {
     @Override
     public void run() {
         while (!serverSocket.isClosed()) {
-
+            clientHandler.acceptConnection(serverSocket);
         }
     }
 
@@ -38,4 +39,7 @@ public class Server implements Runnable {
         new Thread(new Server()).start();
     }
 
+    public ClientHandler getClientHandler() {
+        return clientHandler;
+    }
 }

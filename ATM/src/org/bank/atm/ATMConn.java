@@ -16,24 +16,24 @@ public class ATMConn implements Runnable {
 
     public ATMConn(final ATM atm) {
         this.atm = atm;
-    }
-
-    @Override
-    public void run() {
-        while (!socket.isClosed()) {
-
-        }
-    }
-
-    public void connectToServer() {
         try {
             socket = new Socket("127.0.0.1", 43594);
             inputStream = new DataInputStream(socket.getInputStream());
             outputStream = new DataOutputStream(socket.getOutputStream());
-            connThread.start();
         } catch (final IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void run() {
+        while (isConnected()) {
+
+        }
+    }
+
+    public boolean isConnected() {
+        return !socket.isClosed();
     }
 
     public ATM getAtm() {
