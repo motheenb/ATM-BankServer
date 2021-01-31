@@ -10,6 +10,9 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.security.*;
 
+/**
+ * @author Motheen Baig
+ */
 public class Encryption {
 
     private Cipher rsaCipher;
