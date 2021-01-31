@@ -5,6 +5,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * @author Motheen Baig
+ */
 public class Client implements Runnable {
 
     private Socket socket;
@@ -16,6 +19,8 @@ public class Client implements Runnable {
     private final Thread clientThread = new Thread(this);
     //
     private TellerStatus Status = TellerStatus.Ready;
+    //
+    private Encryption encryption;
 
     private enum TellerStatus {
         Ready, WaitingForCard, CardConfirmed, CardFailed, WaitingForPIN, PINConfirmed, PINFailed
@@ -27,6 +32,7 @@ public class Client implements Runnable {
         try {
             inputStream = new DataInputStream(this.socket.getInputStream());
             outputStream = new DataOutputStream(this.socket.getOutputStream());
+            encryption = new Encryption();
         } catch (final IOException e) {
             e.printStackTrace();
         }
@@ -44,7 +50,9 @@ public class Client implements Runnable {
                     if (messageSize > -1) {
                         messageBytes = new byte[messageSize];
                         inputStream.readFully(messageBytes, 0, messageSize);
-                        clientMessage = new String(messageBytes);
+                        Server.log("IN: " + new String((messageBytes)));
+                        byte plainBytes[] = encryption.RSADecrypt(messageBytes);
+                        clientMessage = new String(plainBytes);
                         handleClientMessages(clientMessage);
                     }
                 }
@@ -100,10 +108,10 @@ public class Client implements Runnable {
     }
 
     public void writeToATM(final String responseMessage) {
-        final byte responseBytes[] = responseMessage.getBytes();
+        final byte cryptoBytes[] = encryption.RSAEncrypt(responseMessage.getBytes());
         try {
-            outputStream.writeInt(responseBytes.length);
-            outputStream.write(responseBytes, 0, responseBytes.length);
+            outputStream.writeInt(cryptoBytes.length);
+            outputStream.write(cryptoBytes, 0, cryptoBytes.length);
             outputStream.flush();
         } catch (final IOException e) {
             e.printStackTrace();
@@ -137,4 +145,9 @@ public class Client implements Runnable {
     public TellerStatus getStatus() {
         return Status;
     }
+
+    public Encryption getEncryption() {
+        return encryption;
+    }
+
 }

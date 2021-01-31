@@ -1,8 +1,10 @@
 package org.bank.atm;
 
 import java.awt.event.*;
-import java.io.IOException;
 
+/**
+ * @author Motheen Baig
+ */
 public class InputHandler implements MouseListener, MouseMotionListener, KeyListener {
 
     private final ATM atm;

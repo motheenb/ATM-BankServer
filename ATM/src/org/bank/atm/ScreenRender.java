@@ -2,6 +2,9 @@ package org.bank.atm;
 
 import java.awt.*;
 
+/**
+ * @author Motheen Baig
+ */
 public class ScreenRender {
 
     private Graphics2D g2d;

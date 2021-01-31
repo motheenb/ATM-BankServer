@@ -7,6 +7,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+/**
+ * @author Motheen Baig
+ */
 public class ATMConn implements Runnable {
 
     private final ATM atm;
@@ -15,6 +18,8 @@ public class ATMConn implements Runnable {
     private Socket socket;
     private DataOutputStream outputStream;
     private DataInputStream inputStream;
+    //
+    private Encryption encryption;
 
     public ATMConn(final ATM atm) {
         this.atm = atm;
@@ -23,6 +28,7 @@ public class ATMConn implements Runnable {
             socket = new Socket("127.0.0.1", 43594);
             inputStream = new DataInputStream(socket.getInputStream());
             outputStream = new DataOutputStream(socket.getOutputStream());
+            encryption = new Encryption();
             connThread.start();
         } catch (final IOException e) {
             Console.log("Error connecting to server.");
@@ -32,7 +38,7 @@ public class ATMConn implements Runnable {
     @Override
     public void run() {
         int messageSize;
-        byte messageBytes[];
+        byte messageBytes[], plainBytes[];
         String serverMessage;
         writeToServer("0:type=ATM:id=-1");
         Console.log("Sent ATM connect request to server.");
@@ -44,7 +50,8 @@ public class ATMConn implements Runnable {
                         messageBytes = new byte[messageSize];
                         inputStream.readFully(messageBytes, 0, messageSize);
                         // decrypt messageBytes[]
-                        serverMessage = new String(messageBytes);
+                        plainBytes = encryption.RSADecrypt(messageBytes);
+                        serverMessage = new String(plainBytes);
                         handleServerMessages(serverMessage);
                     }
                 }
@@ -74,7 +81,7 @@ public class ATMConn implements Runnable {
                     if (clientStatus.equalsIgnoreCase("card_ok")) {
                         ATM.STATE = State.EnterPIN;
                     } else if (clientStatus.equalsIgnoreCase("card_failed")) {
-                        atm.setErrorMessage("Card number entered is invalid/blocked, contact customer support.");
+                        atm.setErrorMessage("Card number is invalid/blocked, contact customer support.");
                     }
                 } else {
                     // ClientID received does not match up with current ClientID.
@@ -90,18 +97,18 @@ public class ATMConn implements Runnable {
                     atm.setlName(lName);
                     ATM.STATE = State.MainMenu;
                 } else if (clientStatus.equalsIgnoreCase("card_pin_failed")) {
-
+                    atm.setErrorMessage("Card PIN is invalid, contact customer support.");
+                    // Pin retries
                 }
             }
         }
     }
 
     public void writeToServer(final String clientMessage) {
-        final byte messageBytes[] = clientMessage.getBytes();
-        // encrypt messageBytes here
+        final byte cryptoBytes[] = encryption.RSAEncrypt(clientMessage.getBytes());
         try {
-            outputStream.writeInt(messageBytes.length);
-            outputStream.write(messageBytes, 0, messageBytes.length);
+            outputStream.writeInt(cryptoBytes.length);
+            outputStream.write(cryptoBytes, 0, cryptoBytes.length);
             outputStream.flush();
         } catch (final IOException e) {
             e.printStackTrace();
@@ -130,5 +137,9 @@ public class ATMConn implements Runnable {
 
     public Thread getConnThread() {
         return connThread;
+    }
+
+    public Encryption getEncryption() {
+        return encryption;
     }
 }
