@@ -1,4 +1,8 @@
-package org.bank.server;
+package org.bank.server.clients;
+
+import org.bank.server.database.BankDBManager;
+import org.bank.server.io.Encryption;
+import org.bank.server.Server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;

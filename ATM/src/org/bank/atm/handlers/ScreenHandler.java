@@ -1,16 +1,18 @@
-package org.bank.atm;
+package org.bank.atm.handlers;
+
+import org.bank.atm.ATM;
 
 import java.awt.*;
 
 /**
  * @author Motheen Baig
  */
-public class ScreenRender {
+public class ScreenHandler {
 
     private Graphics2D g2d;
     private final ATM atm;
 
-    public ScreenRender(final ATM atm) {
+    public ScreenHandler(final ATM atm) {
         this.atm = atm;
     }
 

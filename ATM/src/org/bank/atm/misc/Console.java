@@ -1,4 +1,4 @@
-package org.bank.atm;
+package org.bank.atm.misc;
 
 /**
  * @author Motheen Baig

@@ -1,4 +1,7 @@
-package org.bank.atm;
+package org.bank.atm.handlers;
+
+import org.bank.atm.ATM;
+import org.bank.atm.State;
 
 import java.awt.event.*;
 

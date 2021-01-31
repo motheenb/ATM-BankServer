@@ -1,4 +1,6 @@
-package org.bank.server;
+package org.bank.server.clients;
+
+import org.bank.server.Server;
 
 import java.io.IOException;
 import java.net.ServerSocket;

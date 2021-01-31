@@ -1,4 +1,4 @@
-package org.bank.server;
+package org.bank.server.database;
 
 /**
  * @author Motheen Baig

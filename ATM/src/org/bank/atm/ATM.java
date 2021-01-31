@@ -1,5 +1,9 @@
 package org.bank.atm;
 
+import org.bank.atm.handlers.InputHandler;
+import org.bank.atm.handlers.ScreenHandler;
+import org.bank.atm.io.ATMConn;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -12,7 +16,7 @@ public class ATM extends JFrame {
     //
     private Image img;
     private Graphics gfx;
-    private final ScreenRender screenRender = new ScreenRender(this);
+    private final ScreenHandler screenHandler = new ScreenHandler(this);
     //
     private ATMConn atmConn;
     //
@@ -45,7 +49,7 @@ public class ATM extends JFrame {
             return;
         }
         gfx.clearRect(0, 0, 500, 500);
-        screenRender.paint(gfx);
+        screenHandler.paint(gfx);
         g.drawImage(img, 0, 0, this);
         repaint();
     }
@@ -62,8 +66,8 @@ public class ATM extends JFrame {
         return img;
     }
 
-    public ScreenRender getScreenRender() {
-        return screenRender;
+    public ScreenHandler getScreenHandler() {
+        return screenHandler;
     }
 
     public static void main(final String...args) {

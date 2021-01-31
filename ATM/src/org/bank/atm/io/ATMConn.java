@@ -1,6 +1,8 @@
-package org.bank.atm;
+package org.bank.atm.io;
 
-import org.bank.server.Server;
+import org.bank.atm.ATM;
+import org.bank.atm.misc.Console;
+import org.bank.atm.State;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -66,11 +68,11 @@ public class ATMConn implements Runnable {
         final String data[] = serverMessage.split(":");
         final int requestID = Integer.parseInt(data[0]);
         final String clientStatus = data[3].split("=")[1];
-        Server.log("Server Request ID: " + requestID + ", Server Message: " + serverMessage);
+        Console.log("Server Request ID: " + requestID + ", Server Message: " + serverMessage);
         switch (requestID) {
             case 0 -> {
                 clientID = Integer.parseInt(data[2].split("=")[1]);
-                Server.log("Client ID: " + clientID + ", Client Status: " + clientStatus);
+                Console.log("Client ID: " + clientID + ", Client Status: " + clientStatus);
                 if (clientStatus.equalsIgnoreCase("ready")) {
                     ATM.STATE = State.EnterCard;
                 }

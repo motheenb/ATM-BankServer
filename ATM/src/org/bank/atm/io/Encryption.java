@@ -1,6 +1,6 @@
-package org.bank.server;
+package org.bank.atm.io;
 
-import org.bank.atm.Console;
+import org.bank.atm.misc.Console;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -16,13 +16,12 @@ import java.security.*;
 public class Encryption {
 
     private Cipher rsaCipher;
-    //
-    private PrivateKey privateKey;
+    private PublicKey publicKey;
 
     public Encryption() {
         try {
             rsaCipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
-            privateKey = loadPrivateKey();
+            publicKey = loadPublicKey();
         } catch (final NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
@@ -33,7 +32,7 @@ public class Encryption {
     public byte[] RSAEncrypt(final byte plainBytes[]) {
         byte cryptoBytes[] = null;
         try {
-            rsaCipher.init(Cipher.ENCRYPT_MODE, privateKey);
+            rsaCipher.init(Cipher.ENCRYPT_MODE, publicKey);
             cryptoBytes = rsaCipher.doFinal(plainBytes);
         } catch (final InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
@@ -44,7 +43,7 @@ public class Encryption {
     public byte[] RSADecrypt(final byte cryptoBytes[]) {
         byte plainBytes[] = null;
         try {
-            rsaCipher.init(Cipher.DECRYPT_MODE, privateKey);
+            rsaCipher.init(Cipher.DECRYPT_MODE, publicKey);
             plainBytes = rsaCipher.doFinal(cryptoBytes);
         } catch (final InvalidKeyException | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
@@ -52,21 +51,26 @@ public class Encryption {
         return plainBytes;
     }
 
-    public PrivateKey loadPrivateKey() {
+    public PublicKey loadPublicKey() {
         ObjectInputStream in;
-        PrivateKey privateKey = null;
+        PublicKey publicKey = null;
         try {
-            in = new ObjectInputStream(new FileInputStream("C:\\Users\\mothe\\IdeaProjects\\ATM-BankServer3\\BankServer\\prv.key"));
-            privateKey = (PrivateKey) in.readObject();
-            Console.log("Server using private key: " + privateKey.toString());
+            in = new ObjectInputStream(new FileInputStream("C:\\Users\\mothe\\IdeaProjects\\ATM-BankServer3\\ATM\\pub.key"));
+            publicKey = (PublicKey) in.readObject();
+            Console.log("Client using public key: " + publicKey.toString());
             in.close();
         } catch (final Exception e) {
             e.printStackTrace();
         }
-        return privateKey;
+        return publicKey;
     }
 
-    public PrivateKey getPrivateKey() {
-        return privateKey;
+    public Cipher getRSACipher() {
+        return rsaCipher;
     }
+
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+
 }
