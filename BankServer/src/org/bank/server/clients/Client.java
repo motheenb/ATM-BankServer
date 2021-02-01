@@ -61,7 +61,8 @@ public class Client implements Runnable {
                     }
                 }
             } catch (final IOException e) {
-                e.printStackTrace();
+                ClientHandler.removeConnection(clientID);
+                break;
             }
         }
     }

@@ -11,14 +11,9 @@ import java.net.Socket;
  */
 public class ClientHandler {
 
-    private final Server server;
-    private final Client clients[] = new Client[10];
+    public static Client clients[] = new Client[10];
 
-    public ClientHandler(final Server server) {
-        this.server = server;
-    }
-
-    public void acceptConnection(final ServerSocket serverSocket) {
+    public static void acceptConnection(final ServerSocket serverSocket) {
         int freeID;
         Socket incoming;
         try {
@@ -32,7 +27,15 @@ public class ClientHandler {
         }
     }
 
-    private int getFreeID() {
+    public static boolean removeConnection(final int clientID) {
+        if (clients[clientID] != null){
+            Server.log("ClientID: " + clientID + ", has been disconnected!");
+            clients[clientID] = null;
+        }
+        return clients[clientID] == null ? true : false;
+    }
+
+    private static int getFreeID() {
         for (int i = 0; i < clients.length; i++) {
             if (clients[i] == null) {
                 return i;
@@ -41,9 +44,6 @@ public class ClientHandler {
         return -1;
     }
 
-    public Server getServer() {
-        return server;
-    }
 
     public Client[] getClients() {
         return clients;
