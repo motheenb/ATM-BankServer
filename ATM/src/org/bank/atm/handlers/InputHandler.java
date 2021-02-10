@@ -53,6 +53,8 @@ public class InputHandler implements MouseListener, MouseMotionListener, KeyList
                     atm.getATMConn().writeToServer(clientMessage);
                 }
             }
+        } else if (ATM.STATE.equals(State.Deposit)) {
+
         }
     }
 

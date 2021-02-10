@@ -29,7 +29,6 @@ public class ClientHandler {
 
     public static boolean removeConnection(final int clientID) {
         if (clients[clientID] != null){
-            Server.log("ClientID: " + clientID + ", has been disconnected!");
             clients[clientID] = null;
         }
         return clients[clientID] == null ? true : false;

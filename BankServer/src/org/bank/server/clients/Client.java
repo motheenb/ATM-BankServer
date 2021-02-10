@@ -61,8 +61,10 @@ public class Client implements Runnable {
                     }
                 }
             } catch (final IOException e) {
-                ClientHandler.removeConnection(clientID);
-                break;
+                if (ClientHandler.removeConnection(clientID)) {
+                    Server.log("ClientID: " + clientID + ", has been disconnected!");
+                    break;
+                }
             }
         }
     }
@@ -86,7 +88,6 @@ public class Client implements Runnable {
             case 1 -> {
                 if (Status.equals(TellerStatus.WaitingForCard)) {
                     final long cardNumber = Long.parseLong(data[3].split("=")[1]);
-                    // Check to see if cardNumber is blocked, exists, valid, etc...
                     final String cardStatus = BankDBManager.clientCardExists(cardNumber) ? "card_ok" : "card_failed";
                     if (cardStatus.equalsIgnoreCase("card_ok")) {
                         Status = TellerStatus.WaitingForPIN;
@@ -104,7 +105,7 @@ public class Client implements Runnable {
                     final long cardNumber = Long.parseLong(data[3].split("=")[1]);
                     final int cardPIN = Integer.parseInt(data[4].split("=")[1]);
                     Server.log("Card Number: " + cardNumber + ", CardPIN: " + cardPIN);
-                    responseMessage = "2:type=ATM:id=" + clientID + ":status=card_pin_ok:" + BankDBManager.getCustomerInfo(cardNumber);
+                    responseMessage = "2:type=ATM:id=" + clientID + ":status=card_pin_ok:" + BankDBManager.getInstance().getCustomerInfo(cardNumber);
                     writeToATM(responseMessage);
                     Status = TellerStatus.PINConfirmed;
                 }
